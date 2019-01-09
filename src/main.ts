@@ -5,6 +5,9 @@ import { join } from 'path';
 import { ConfigService } from './config/config.service';
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
+import * as compression from 'compression';
+
+declare const module: any;
 
 async function bootstrap() {
   // setup root path
@@ -21,6 +24,9 @@ async function bootstrap() {
   app.set('view engine', 'html');
   app.setBaseViewsDir(join(rootDir, 'views'));
 
+  // setup response data compression
+  app.use(compression());
+  // setup cookie parser
   app.use(cookieParser(config.sessionSecret));
   // 防止跨站请求伪造
   app.use(csurf({ cookie: true }));
@@ -49,5 +55,10 @@ async function bootstrap() {
   await app.listen(config.port, () => {
     console.log(`Server start in: http://127.0.0.1:${config.port}`);
   });
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();

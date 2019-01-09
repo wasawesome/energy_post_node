@@ -8,10 +8,12 @@
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register src/main.ts",
+    "start:hmr": "cross-env NODE_ENV=development node dist/server",
     "start:dev": "cross-env NODE_ENV=development nodemon",
     "start:debug": "nodemon --config nodemon-debug.json",
     "prestart:prod": "rimraf dist && tsc",
     "start:prod": "cross-env NODE_ENV=development node dist/main.js",
+    "webpack": "webpack --config webpack.config.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -20,10 +22,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "^5.4.0",
+    "@nestjs/common": "^5.5.0",
     "@nestjs/core": "^5.4.0",
     "class-transformer": "^0.2.0",
     "class-validator": "^0.9.1",
+    "compression": "^1.7.3",
     "cookie-parser": "^1.4.3",
     "cross-env": "^5.2.0",
     "csurf": "^1.9.0",
@@ -50,7 +53,10 @@
     "ts-loader": "^4.4.2",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.5.0",
-    "tslint": "5.11.0"
+    "tslint": "5.11.0",
+    "webpack": "^4.28.1",
+    "webpack-cli": "^3.2.1",
+    "webpack-node-externals": "^1.7.2"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -65,5 +71,9 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "node": "^10.0.0",
+    "npm": "^6.4.0"
   }
 }
