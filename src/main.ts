@@ -1,3 +1,4 @@
+// import { TLogger } from './logs/logger.service';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './modules/app.module';
@@ -12,10 +13,10 @@ declare const module: any;
 async function bootstrap() {
   // setup root path
   const rootDir = join(__dirname, '../');
-  const app = await NestFactory.create(AppModule);
-  const config: ConfigService = new ConfigService(
-    join(__dirname, `./config/env/${process.env.NODE_ENV}.env`),
-  );
+  const app = await NestFactory.create(AppModule, {
+    // logger: console,
+  });
+  const config: ConfigService = app.get(ConfigService);
 
   app.useStaticAssets(join(rootDir, 'public'), {
     prefix: '/public',
@@ -32,6 +33,9 @@ async function bootstrap() {
   app.use(csurf({ cookie: true }));
   // setup cors
   app.enableCors();
+
+  // setup custom logger
+  // app.useLogger(app.get(TLogger));
 
   // 设置变量 csrf 保存csrfToken值
   // app.use((req, res, next) => {
