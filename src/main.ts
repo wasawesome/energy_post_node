@@ -1,12 +1,14 @@
 // import { TLogger } from './logs/logger.service';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { AppModule } from './modules/app.module';
+import { AppModule } from './app.module';
 import { join } from 'path';
 import { ConfigService } from './config/config.service';
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
 import * as compression from 'compression';
+import { ExceptionHandleFilter } from './common/exceptionHandle.filter';
+import { ResponseInterceptor } from './common/response.interceptor';
 
 declare const module: any;
 
@@ -28,6 +30,7 @@ async function bootstrap() {
   // setup response data compression
   app.use(compression());
   // setup cookie parser
+
   app.use(cookieParser(config.sessionSecret));
   // 防止跨站请求伪造
   app.use(csurf({ cookie: true }));
@@ -53,8 +56,10 @@ async function bootstrap() {
       // forbidUnknownValues: true,
     }),
   );
-  // 注册全局http异常过滤器
-  // app.useGlobalFilters(new HttpExceptionFilter());
+  // setup golbal custom exception filter
+  app.useGlobalFilters(new ExceptionHandleFilter());
+  // setup golbal response interceptor
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   await app.listen(config.port, () => {
     console.log(`Server start in: http://127.0.0.1:${config.port}`);

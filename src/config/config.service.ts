@@ -10,7 +10,6 @@ export class ConfigService {
   private readonly envConfig: EnvConfig;
 
   constructor(envFileName: string) {
-    console.log(__dirname);
     const config = dotenv.parse(fs.readFileSync(`${__dirname}\\env\\${envFileName}`));
     this.envConfig = this.validateInput(config);
   }
@@ -86,8 +85,8 @@ export class ConfigService {
   get databaseDropSchema(): boolean {
     return Boolean(this.envConfig.DATABASE_DROPSCHEMA);
   }
-  get sessionSecret(): boolean {
-    return Boolean(this.envConfig.SESSION_SECRET);
+  get sessionSecret(): string {
+    return this.envConfig.SESSION_SECRET;
   }
   get isApiAuthEnabled(): boolean {
     return Boolean(this.envConfig.API_AUTH_ENABLED);
